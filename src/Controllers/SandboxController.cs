@@ -9,10 +9,12 @@ namespace MassTransitSessionId.Controllers;
 public class SandboxController : ControllerBase
 {
     private readonly ISendEndpointProvider _sendEndpointProvider;
+    private readonly ILogger<SandboxController> _logger;
 
-    public SandboxController(ISendEndpointProvider sendEndpointProvider)
+    public SandboxController(ISendEndpointProvider sendEndpointProvider, ILogger<SandboxController> logger)
     {
         _sendEndpointProvider = sendEndpointProvider;
+        _logger = logger;
     }
 
     [HttpPost("say-something")]
@@ -26,7 +28,9 @@ public class SandboxController : ControllerBase
         };
 
         var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:main-app"));
-        await sendEndpoint.Send(cmd, cancellationToken);
+        await sendEndpoint.Send(cmd, context => context.SetSessionId("XD"), cancellationToken);
+        
+        _logger.LogInformation("Message sent");
         
         return Ok();
     }

@@ -13,9 +13,17 @@ public class SaySomethingIntegrationCommandConsumer : IConsumer<SaySomethingInte
 
     public Task Consume(ConsumeContext<SaySomethingIntegrationCommand> context)
     {
+        PlayRoulette();
+        
         _logger.LogInformation("Message {MessageId} | Saying: {Content}", 
             context.Message.MessageId, context.Message.Content);
         
         return Task.CompletedTask;
+    }
+    
+    private static void PlayRoulette()
+    {
+        if (new Random().NextInt64(1, 10) != 5)
+            throw new InvalidOperationException("Lost in roulette");
     }
 }
