@@ -23,7 +23,7 @@ public class SaySomethingIntegrationCommandConsumer : IConsumer<SaySomethingInte
     
     private static void PlayRoulette()
     {
-        if (new Random().NextInt64(1, 10) != 5)
+        if (new Random().NextInt64(1, 5) != 2)
             throw new InvalidOperationException("Lost in roulette");
     }
 }
