@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  app1:
+    container_name: app1
+    image: "mt-app"
+    ports:
+      - "21371:80"
+  app2:
+    container_name: app2
+    image: "mt-app"
+    ports:
+      - "21372:80"
+  app3:
+    container_name: app3
+    image: "mt-app"
+    ports:
+      - "21373:80"

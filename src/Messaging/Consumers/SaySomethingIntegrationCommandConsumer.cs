@@ -13,17 +13,20 @@ public class SaySomethingIntegrationCommandConsumer : IConsumer<SaySomethingInte
 
     public Task Consume(ConsumeContext<SaySomethingIntegrationCommand> context)
     {
+        _logger.LogInformation("Message {MessageId} | SessionId {SessionId} | Trying process...", 
+            context.MessageId, context.SessionId());
+        
         PlayRoulette();
         
-        _logger.LogInformation("Message {MessageId} | Saying: {Content}", 
-            context.Message.MessageId, context.Message.Content);
+        _logger.LogInformation("Message {MessageId} | SessionId {SessionId} | Saying: {Content}", 
+            context.MessageId, context.SessionId(), context.Message.Content);
         
         return Task.CompletedTask;
     }
     
     private static void PlayRoulette()
     {
-        if (new Random().NextInt64(1, 5) != 2)
+        if (new Random().NextInt64(1, 5) == 2)
             throw new InvalidOperationException("Lost in roulette");
     }
 }
