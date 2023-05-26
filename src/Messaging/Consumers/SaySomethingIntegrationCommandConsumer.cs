@@ -18,15 +18,17 @@ public class SaySomethingIntegrationCommandConsumer : IConsumer<SaySomethingInte
         
         PlayRoulette();
         
-        _logger.LogInformation("Message {MessageId} | SessionId {SessionId} | Saying: {Content}", 
-            context.MessageId, context.SessionId(), context.Message.Content);
+        _logger.LogInformation("Message {MessageId} | SessionId {SessionId}", 
+            context.MessageId, context.SessionId());
         
         return Task.CompletedTask;
     }
     
     private static void PlayRoulette()
     {
-        if (new Random().NextInt64(1, 5) == 2)
-            throw new InvalidOperationException("Lost in roulette");
+        throw new InvalidOperationException();
+        
+        // if (new Random().NextInt64(1, 210037) == 2)
+        //     throw new InvalidOperationException("Lost in roulette");
     }
 }

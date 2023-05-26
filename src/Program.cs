@@ -20,13 +20,21 @@ builder.Services.AddMassTransit(configurator =>
         });
 
         azBusConfigurator.Host(builder.Configuration.GetValue<string>("ServiceBus:ConnectionString"));
-        azBusConfigurator.ReceiveEndpoint("main-app", endpointConfigurator =>
+        
+        azBusConfigurator.ReceiveEndpoint("lock-test-queue", endpointConfigurator =>
         {
             endpointConfigurator.ConfigureConsumer<SaySomethingIntegrationCommandConsumer>(azContext);
+            
+            endpointConfigurator.MaxAutoRenewDuration = TimeSpan.FromMinutes(30);
+            endpointConfigurator.RequiresSession = true;
+            
+            endpointConfigurator.UseMessageRetry(r =>
+            {
+                r.Interval(10, TimeSpan.FromMinutes(1));
+            });
         });
     });
 });
-
 
 var app = builder.Build();
 app.MapControllers();

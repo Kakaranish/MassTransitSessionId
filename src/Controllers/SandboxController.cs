@@ -18,19 +18,17 @@ public class SandboxController : ControllerBase
     }
 
     [HttpPost("say-something")]
-    public async Task<IActionResult> SaySomething([FromBody] SomethingToSay somethingToSay, 
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> SaySomething()
     {
         var cmd = new SaySomethingIntegrationCommand
         {
-            MessageId = somethingToSay.MessageId,
-            Content = somethingToSay.ContentToSay
+            MessageId = Guid.NewGuid()
         };
 
-        var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:main-app"));
-        await sendEndpoint.Send(cmd, context => context.SetSessionId("XD"), cancellationToken);
+        var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:lock-test-queue"));
+        await sendEndpoint.Send(cmd, context => context.SetSessionId("XD"));
         
-        _logger.LogInformation("Message sent");
+        _logger.LogInformation("Message sent with id - {MessageId}", cmd.MessageId);
         
         return Ok();
     }
